@@ -1,0 +1,45 @@
+nano .my.cnf
+[client] 
+user=root
+password=*********
+mysql
+mysql> create database example
+    -> ;
+Query OK, 1 row affected (0.01 sec)
+
+mysql> show databases;
++--------------------+
+| Database           |
++--------------------+
+| example            |
+| information_schema |
+| mysql              |
+| performance_schema |
+| sys                |
++--------------------+
+5 rows in set (0.00 sec)
+
+mysql> use example;
+Database changed
+mysql> create table users(
+    ->   id INT AUTO_INCREMENT NOT NULL PRIMARY KEY,
+    ->   name VARCHAR(100) NOT NULL);
+Query OK, 0 rows affected (0.03 sec)
+
+mysql> describe users
+    -> ;
++-------+--------------+------+-----+---------+----------------+
+| Field | Type         | Null | Key | Default | Extra          |
++-------+--------------+------+-----+---------+----------------+
+| id    | int(11)      | NO   | PRI | NULL    | auto_increment |
+| name  | varchar(100) | NO   |     | NULL    |                |
++-------+--------------+------+-----+---------+----------------+
+2 rows in set (0.01 sec)
+
+mysql> exit
+
+mysqldump example > ./dump_example.sql
+mysql -e "CREATE DATABASE IF NOT EXIST sample" 
+mysql sample < ./dump_example.sql 
+
+mysqldump --where="true limit 101" mysql help_keyword > ./dump_table_help_keyword.sql
