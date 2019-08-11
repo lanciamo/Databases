@@ -43,3 +43,5 @@ mysql -e "CREATE DATABASE IF NOT EXIST sample"
 mysql sample < ./dump_example.sql 
 
 mysqldump --where="true limit 101" mysql help_keyword > ./dump_table_help_keyword.sql
+
+mysqldump --where="true ORDER BY help_keyword_id limit 101" mysql help_keyword > ./dump_table_help_keyword.sql -- сортировка
