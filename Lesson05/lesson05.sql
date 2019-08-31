@@ -4,7 +4,13 @@ UPDATE users SET created_at = NOW();
 UPDATE users SET updated_at = NOW();
 
 -- 2.
-
+UPDATE users
+    SET created_at = str_to_date(created_at, '%d.%m.%Y %h%%i'),
+        updated_at = str_to_date(updated_at, '%d.%m.%Y %h%%i');
+ALTER TABLE users
+    MODIFY created_at DATETIME,
+    MODIFY updated_at DATETIME;
+    
 
 -- 3.
 INSERT INTO storehouses_products (storehouse_id, product_id, value) VALUES (1, 1, 50), (1, 1, 25), (1, 1, 2), (1, 1, 30), (1, 1, 20), (1, 1, 1
