@@ -26,29 +26,35 @@ FROM users
 ORDER BY number_messages DESC
 ;
 
--- 3.
+-- 3. лайки посчитаны только по медиа
 SELECT
     CONCAT (lastname, ' ',
     firstname),
+    @a := id,
     (SELECT 2019 - SUBSTRING(birthday, 1, 4)
     FROM
-    profiles p WHERE p.user_id = u.id) AS ages
+    profiles p WHERE p.user_id = @a) AS ages,
+    (SELECT COUNT(*) FROM likes WHERE like_type_id IN (1, 2, 4) AND item_id IN
+    (SELECT id FROM media WHERE user_id = @a))
 FROM users u
-ORDER BY ages;
+ORDER BY ages
+LIMIT 10;
 
-SELECT id FROM likes WHERE like_type_id IN (1, 2, 4) AND item_id IN (
-    SELECT id FROM media WHERE id;
+-- 4.
 
-
-
-
+SELECT 'male', COUNT(*) FROM likes WHERE user_id IN (
+    SELECT user_id FROM profiles WHERE sex LIKE 'm')
 UNION
-SELECT 2019 - SUBSTRING(birthday, 1, 4)
-    FROM
-    profiles ORDER BY user_id
-;
+SELECT 'female', COUNT(*) FROM likes WHERE user_id IN (
+    SELECT user_id FROM profiles WHERE sex NOT LIKE 'm');
+    
+-- 5.
 
-SELECT lastname, id from users ORDER BY id
-JOIN RIGHT
-SELECT 2019 - SUBSTRING(birthday, 1, 4) FROM profiles
-;
+SELECT
+    CONCAT (lastname, ' ',
+    firstname),
+    @a := id,
+    (SELECT COUNT(*) FROM likes WHERE user_id = @a) AS likes
+FROM users u
+ORDER BY likes
+LIMIT 10;
