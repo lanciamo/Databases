@@ -50,9 +50,7 @@ SELECT 'female', COUNT(*) FROM likes WHERE user_id IN (
     
 -- 5.
 
-SELECT
-    CONCAT (lastname, ' ',
-    firstname),
+ SELECT CONCAT (u.lastname, ' ', u.firstname),
     @a := id,
     (SELECT COUNT(*) FROM likes WHERE user_id = @a) AS likes
 FROM users u

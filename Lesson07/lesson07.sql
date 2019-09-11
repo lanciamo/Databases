@@ -1,6 +1,17 @@
 -- 1.
 SELECT name from users WHERE id IN (SELECT user_id from orders);
 
+SELECT users.name, orders.created_at
+  FROM users
+  JOIN orders
+    ON users.id = orders.user_id;
+
+INSERT INTO orders
+  (user_id)
+VALUES
+  ('1'),
+  ('3'),
+  ('4');
 -- 2.
 
 SELECT

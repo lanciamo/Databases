@@ -436,7 +436,7 @@ SELECT users.id, users.name, users.birthday_at, orders.id, orders.user_id
 -- Запросы на БД Vk
 
 -- Выборка данных по пользователю
-SELECT firstname, lastname, email, sex, birthday, hometown
+SELECT firstname, lastname, email, sex, 2019 - birthday, hometown
   FROM users
     LEFT JOIN profiles
       ON users.id = profiles.user_id
@@ -482,7 +482,7 @@ SELECT firstname, lastname, COUNT(*) AS total_friends
 
 -- Список медиафайлов пользователя с количеством лайков
 SELECT media.filename,
-  media_types.name,
+  COUNT(media_types.name) AS total_types,
   COUNT(*) AS total_likes,
   CONCAT(firstname, ' ', lastname) AS owner
   FROM media
