@@ -55,37 +55,75 @@ ALTER TABLE media
 
 -- Пункт 2. Скрин в каталоге Lesson08 на GitHub
 -- Пункт 3. 
--- 6.1
+-- 6.1 --
 -- 6.2
+SELECT COUNT(*),
+       m.from_user_id
+  FROM messages m
+  LEFT JOIN friendship f1
+    ON f1.user_id = m.from_user_id
+  LEFT JOIN friendship f2
+    ON f2.friend_id = m.from_user_id
+       WHERE m.to_user_id = 23
+         AND (f1.friend_id = m.to_user_id OR f2.user_id = m.to_user_id)
+GROUP BY m.from_user_id
+ORDER BY COUNT(*) DESC
+LIMIT 1;
+
 -- 6.3
+  SELECT CONCAT (u.lastname, ' ', u.firstname) AS name,
+         COUNT(l.user_id) AS likes_count,
+         p.birthday AS ages
+    FROM users u
+    JOIN profiles p
+      ON p.user_id = u.id
+    LEFT JOIN media m
+      ON m.user_id = u.id
+    LEFT JOIN likes l
+      ON l.item_id = m.id WHERE l.like_type_id IN (1, 2, 4)
+GROUP BY u.id
+ORDER BY ages DESC
+   LIMIT 10;
 
--- 6.4
 
-(SELECT 'male', COUNT(*)
-FROM likes l
-JOIN profiles p1
-ON l.user_id = p1.user_id AND p1.sex = 'm')
-UNION (
+-- 6.4    
+       (
+SELECT 'male' AS 'sex', COUNT(*) AS 'total likes'
+  FROM likes l
+  JOIN profiles p1
+    ON l.user_id = p1.user_id AND p1.sex = 'm'
+       )
+ UNION 
+       (
 SELECT 'female', COUNT(*)
-FROM likes l
-JOIN profiles p1
-ON l.user_id = p1.user_id AND p1.sex != 'm');
+  FROM likes l
+  JOIN profiles p1
+    ON l.user_id = p1.user_id AND p1.sex != 'm'
+       );
+/* не получилось у меня собрать таблицу где разбито не по строкам а по столбцам(
+      
+SELECT COUNT(lm.user_id) AS 'men likes',
+       COUNT(lw.user_id) AS 'women likes'   
+  FROM likes lm
+  JOIN profiles pm
+    ON lm.user_id = pm.user_id AND pm.sex = 'm'
+ RIGHT JOIN likes lw
+ -- profiles pw
+--    ON lw.user_id = pw.user_id AND pw.sex != 'm'
+;*/
 
-
-SELECT COUNT(p1.user_id), COUNT(p2.user_id)
-FROM likes l
-INNER JOIN profiles p1
-ON l.user_id = p1.user_id AND p1.sex = 'm'
-INNER JOIN profiles p2
-ON l.user_id = p2.user_id AND p2.sex != 'm';
 -- 6.5
   SELECT CONCAT (u.lastname, ' ', u.firstname) AS name,
-         COUNT(*) AS likes
+         COUNT(l.user_id) + COUNT(m.user_id) + COUNT(me.from_user_id) AS activity
     FROM users u
-    JOIN likes l
+    LEFT JOIN likes l
       ON l.user_id = u.id
+    LEFT JOIN media m
+      ON m.user_id = u.id
+    LEFT JOIN messages me
+      ON me.from_user_id = u.id
 GROUP BY name
-ORDER BY likes
+ORDER BY activity
    LIMIT 10;
   
 -- 7.1
@@ -112,4 +150,8 @@ ORDER BY likes
       LEFT JOIN cities c2
         ON c2.label = flights.destination;
 
-    
+
+
+UPDATE messages SET from_user_id = from_user_id + RAND(5);
+UPDATE likes SET user_id = user_id + RAND(5);
+UPDATE media SET user_id = user_id + RAND(5);
