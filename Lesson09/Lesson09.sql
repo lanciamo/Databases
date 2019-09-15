@@ -57,11 +57,11 @@ BEGIN
   SET nights = 'Good night!';
   SET returniamo = 'default';
   
-      IF DATE_FORMAT(NOW(), "%H:") IN (05, 11)
+      IF DATE_FORMAT(NOW(), "%H:") BETWEEN (05, 11)
         THEN SET returniamo = mornings;
-      ELSEIF DATE_FORMAT(NOW(), "%H:") IN (12, 16)
+      ELSEIF DATE_FORMAT(NOW(), "%H:") BETWEEN (12, 16)
         THEN SET returniamo = days;
-      ELSEIF DATE_FORMAT(NOW(), "%H:") IN (17, 23)
+      ELSEIF DATE_FORMAT(NOW(), "%H:") BETWEEN (17, 23)
         THEN SET returniamo = evenings;
       ELSE SET returniamo = nights;
       
@@ -74,20 +74,20 @@ END//
 CREATE TRIGGER check_product_nn_insert BEFORE INSERT ON products
 FOR EACH ROW
 BEGIN
-  IF NEW.name = NULL THEN
-    SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'DELETE canceled';
-  ELSEIF NEW.description = NULL THEN
-    SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'DELETE canceled';
+ IF NEW.name = NULL AND OLD.description = NULL THEN
+    SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'INSERT canceled';
+  ELSEIF NEW.description = NULL AND OLD.name = NULL THEN
+    SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'INSERT canceled';
   END IF;
 END//
 
 CREATE TRIGGER check_product_nn_update BEFORE UPDATE ON products
 FOR EACH ROW
 BEGIN
-  IF NEW.name = NULL THEN
-    SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'DELETE canceled';
-  ELSEIF NEW.description = NULL THEN
-    SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'DELETE canceled';
+  IF NEW.name = NULL AND OLD.description = NULL THEN
+    SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'UPDATE canceled';
+  ELSEIF NEW.description = NULL AND OLD.name = NULL THEN
+    SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'UPDATE canceled';
   END IF;
 END//
 
