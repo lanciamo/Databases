@@ -46,24 +46,19 @@ DELIMITER //
 -- 1. не очень работает
 
 DROP FUNCTION IF EXISTS hello;
-CREATE FUNCTION hello(seconds INT)
+CREATE FUNCTION hello()
 RETURNS VARCHAR(255) DETERMINISTIC
 BEGIN
-  DECLARE mornings, days, evenings, nights, returniamo VARCHAR(255);
-
-  SET mornings = 'Good morning!';
-  SET days = 'Good afternoon!';
-  SET evenings = 'Good evening!';
-  SET nights = 'Good night!';
-  SET returniamo = 'default';
+  DECLARE times VARCHAR(255);
+  SET times = DATE_FORMAT(NOW(), "%H:")
   
-      IF DATE_FORMAT(NOW(), "%H:") BETWEEN (05, 11)
-        THEN SET returniamo = mornings;
+      IF times BETWEEN (05, 11)
+        THEN RETURN 'Good morning!';
       ELSEIF DATE_FORMAT(NOW(), "%H:") BETWEEN (12, 16)
-        THEN SET returniamo = days;
+        THEN RETURN 'Good afternoon!';
       ELSEIF DATE_FORMAT(NOW(), "%H:") BETWEEN (17, 23)
-        THEN SET returniamo = evenings;
-      ELSE SET returniamo = nights;
+        THEN RETURN 'Good evening!';
+      ELSE RETURN 'Good night!';
       
   RETURN returniamo;
 
