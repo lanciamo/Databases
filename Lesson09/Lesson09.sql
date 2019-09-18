@@ -43,25 +43,25 @@ SELECT * FROM namedog;
 DELIMITER //
 
 
--- 1. не очень работает
+-- 1. разобрался)
 
 DROP FUNCTION IF EXISTS hello;
 CREATE FUNCTION hello()
 RETURNS VARCHAR(255) DETERMINISTIC
+
 BEGIN
-  DECLARE times VARCHAR(255);
-  SET times = DATE_FORMAT(NOW(), "%H:")
   
-      IF times BETWEEN (05, 11)
+  DECLARE times INT;
+  SET times = DATE_FORMAT(NOW(), "%H");
+  
+      IF times BETWEEN 05 AND 11
         THEN RETURN 'Good morning!';
-      ELSEIF DATE_FORMAT(NOW(), "%H:") BETWEEN (12, 16)
+      ELSEIF times BETWEEN 12 AND 16
         THEN RETURN 'Good afternoon!';
-      ELSEIF DATE_FORMAT(NOW(), "%H:") BETWEEN (17, 23)
+      ELSEIF times BETWEEN 17 AND 23
         THEN RETURN 'Good evening!';
       ELSE RETURN 'Good night!';
-      
-  RETURN returniamo;
-
+      END IF;
 END//
 
 -- 2.
@@ -73,6 +73,8 @@ BEGIN
     SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'INSERT canceled';
   ELSEIF NEW.description = NULL AND OLD.name = NULL THEN
     SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'INSERT canceled';
+  ELSEIF NEW.description = NULL AND NEW.name = NULL THEN
+    SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'INSERT canceled';
   END IF;
 END//
 
@@ -83,6 +85,8 @@ BEGIN
     SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'UPDATE canceled';
   ELSEIF NEW.description = NULL AND OLD.name = NULL THEN
     SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'UPDATE canceled';
+  ELSEIF NEW.description = NULL AND NEW.name = NULL THEN
+    SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'INSERT canceled';
   END IF;
 END//
 
