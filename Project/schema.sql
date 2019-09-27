@@ -127,3 +127,38 @@ CREATE TABLE tracker (
   created_at datetime DEFAULT current_timestamp(),
   updated_at datetime DEFAULT current_timestamp() ON UPDATE current_timestamp()
 );
+
+DROP TABLE IF EXISTS tasks;
+
+CREATE TABLE tasks (
+  id SERIAL PRIMARY KEY,      
+  user_id int(10) unsigned NOT NULL,
+  contact_through int(10) unsigned NOT NULL, # 
+  contact_type int(10) unsigned NOT NULL, #phone, email, messengers, a meeting... etc.
+  contact_status bit NOT NULL, # 0 - incoming, 1 - outcoming
+  content_id int(10) unsigned DEFAULT NULL, # content or note about the conversation
+  created_at datetime DEFAULT current_timestamp(),
+  updated_at datetime DEFAULT current_timestamp() ON UPDATE current_timestamp()
+);
+
+DROP TABLE IF EXISTS users;
+
+CREATE TABLE users (  # copmany workers
+  id SERIAL PRIMARY KEY,
+  firstname varchar(100) COLLATE utf8_unicode_ci NOT NULL,
+  midname varchar(100) COLLATE utf8_unicode_ci,    
+  lastname varchar(100) COLLATE utf8_unicode_ci,
+  sex bit, # 0 - female, 1 - male    
+  birthday date,
+  INN varchar(20),
+  role_enum ENUM('manager', 'admin', 'SDO'),  worker_since_at datetime DEFAULT NULL,
+  worker_until_at datetime DEFAULT NULL,
+  created_at datetime DEFAULT current_timestamp(),
+  updated_at datetime DEFAULT current_timestamp() ON UPDATE current_timestamp()
+);
+
+ALTER TABLE relations
+  ADD CONSTRAINT relations_human_id_fk 
+    FOREIGN KEY (human_entiti_id) REFERENCES human_entities(id)
+      ON DELETE CASCADE;
+
